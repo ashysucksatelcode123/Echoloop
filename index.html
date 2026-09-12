@@ -57,9 +57,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.3/socket.io.min.js"></script>
 <script>
-const socket = io({
-    transports: ['websocket']
-});
+const socket = io('https://onrender.com', { transports: ['websocket'] });
 
 const box = document.getElementById('messages');
 const input = document.getElementById('messageInput');
