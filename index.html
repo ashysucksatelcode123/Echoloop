@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Echoloop Chat</title>
+        <script src="https://socket.io"></script>
+        <style>
+           * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+           body { background-color: #f7f9f6; color: #333333; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
+
+           .chat-container { width: 100%; max-width: 600px; background-color: #ffffff; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #e2e8e2; height: 80vh; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+
+           .header { background-color: #b7e4c7; color: #2d5a3f; padding: 18px; text-align: center; font-size: 1.3rem; font-weight: bold; letter-spacing: 1px; border-bottom: 1px solid #a3d9b5; }
+
+           .messages-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: #ffffff; }
+
+           .message { background-color: #e8f5e9; color: #2d5a3f; padding: 10px 15px; border-radius: 12px; max-width: 80%; width: fit-content; word-break: break-word; font-size: 0.95rem; border: 1px solid #d4ebd5; }
+
+           .my-msg { align-self: flex-end; background-color: #e8f5e9; color: #1b4332; margin-left: auto; margin-right: 0; }
+
+           .their-msg { align-self: flex-start; background-color: #e8f5e9; color: #1b4332; margin-left: 0; margin-right: auto; }
+
+           .input-area { background-color: #e8f5e9; color: #2d5a3f; padding: 10px 15px; border-radius: 12px; max-width: 80%; width: fit-content; word-break: break-word; font-size: 0.95rem; border: 1px solid #d4ebd5; }
+
+           input { flex: 1; background-color: #ffffff; border: 1px solid #ced4ce; padding: 12px; border-radius: 8px; color: #333; font-size: 1rem; outline: none; }
+
+           input:focus { border-color: #85d29e; }
+
+           button { width: 48px; height: 48px; background-color: #b7e4c7; border: none; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.15); transition: all 0.2s; }
+
+           button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.2); }
+
+           .echo-icon { width: 24px; height: 24px; fill: none; stroke: #2d5a3f; stroke-width: 2.5; stroke-linecap: round; }
+
+        </style>
+    </head>
+    <body>
+
+        <div class="chat-container">
+            <div class="header">EchoLoop</div>
+            <div class="messages-box" id="messages"></div>
+            <div class="input-area">
+                <input type="text" id="messageInput" placeholder="Echo a message!" autocomplete="off" spellcheck="false">
+                <button id="sendBtn">
+                    <svg class="echo-icon" viewBox="0 0 24 24">
+                        <path d="M5 12a7 7 0 0 1 7-7"/>
+                        <path d="M8 12a4 4 0 0 1 4-4"/>
+                        <path d="M11 12a1 1 0 0 1 1-1"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.3/socket.io.min.js"></script>
+<script>
+const socket = io({
+    transports: ['websocket']
+});
+
+const box = document.getElementById('messages');
+const input = document.getElementById('messageInput');
+const btn = document.getElementById('sendBtn');
+
+socket.on('message', function(data) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+
+    let messageText = '';
+
+    if (typeof data === 'object' && data !== null) {
+        messageText = data.text;
+    
+    if (data.sender_id === socket.id || data['sender-id'] === socket.id) {
+        messageElement.classList.add('my-msg');
+     } else {
+        messageElement.classList.add('their-msg');
+     }
+ } else {
+    messageText = data;
+    messageElement.classList.add('my-msg');
+ }
+     messageElement.textContent = messageText;
+     box.appendChild(messageElement);
+     box.scrollTop = box.scrollHeight;
+
+     localStorage.setItem('echoloop_history', box.innerHTML)
+ });
+
+function sendText() {
+    const text = input.value.trim();
+    if (text !== '') {
+        socket.send(text);
+        input.value = '';
+    }
+}
+
+btn.addEventListener('click', sendText);
+input.addEventListener('keypress', function(e) {
+    if (e.key == 'Enter') sendText();
+});
+
+const savedHistory = localStorage.getItem('echoloop_history');
+if(savedHistory) {
+    box.innerHTML = savedHistory;
+    box.scrollTop = box.scrollHeight;
+}
+
+</script>
+
+
+</html>
