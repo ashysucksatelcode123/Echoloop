@@ -35,29 +35,150 @@
 
            .echo-icon { width: 24px; height: 24px; fill: none; stroke: #2d5a3f; stroke-width: 2.5; stroke-linecap: round; }
 
+.app-container {
+display: flex;
+width: 90vw;
+height: 85vh;
+background-color: #ffffff;
+border-radius: 24px;
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+overflow: hidden;
+}
+
+.sidebar {
+width: 260px;
+background-color: #2d3e33; 
+border-right: 1px solid #223027;
+display: flex;
+flex-direction: column;
+padding: 20px 10px;
+gap: 12px;
+}
+
+.channel-item {
+padding: 12px 16px;
+background-color: #ffffff;
+border: 1px solid #e2e8e2;
+border-radius: 12px;
+color: #2d5a3f;
+font-weight: bold;
+cursor: pointer;
+font-size: 0.95rem;
+transition: all 0.2s;
+}
+
+.channel-item:hover, .channel-item.active {
+background-color: #b7e4c7;
+color: #1b4332;
+border-color: #b7e4c7;
+}
+
+.chat-area {
+flex: 1;
+display: flex;
+flex-direction: column;
+background-color: #ffffff;
+}
+
+/* 1. Make the main wrapper stack the header on top of the chat channels */
+.app-container {
+display: flex;
+flex-direction: column; /* Stacks header on top, content on bottom */
+width: 90vw;
+height: 85vh;
+background-color: #ffffff;
+border-radius: 24px;
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+overflow: hidden;
+}
+
+/* 2. Your NEW full-width top banner layout! */
+.app-header {
+width: 100%;
+background-color: #b7e4c7; /* Your custom pastel green */
+color: #1b4332;
+text-align: center;
+padding: 15px 0;
+font-size: 1.5rem;
+font-weight: bold;
+letter-spacing: 1px;
+border-bottom: 1px solid #e2e8e2;
+}
+
+/* 3. This splits the bottom area into your sidebar and chat side-by-side */
+.main-content {
+display: flex;
+flex: 1; /* Fills up the remaining space below the header */
+width: 100%;
+overflow: hidden;
+}
+
+/* Keep your sidebar and chat-area rules exactly the same as before! */
+.sidebar {
+width: 260px;
+background-color: #f4f7f4;
+border-right: 1px solid #e2e8e2;
+display: flex;
+flex-direction: column;
+padding: 20px 10px;
+gap: 12px;
+}
+
+.chat-area {
+flex: 1;
+display: flex;
+flex-direction: column;
+background-color: #ffffff;
+}
+
         </style>
     </head>
     <body>
+        <body>
 
-        <div class="chat-container">
-            <div class="header">EchoLoop</div>
-            <div class="messages-box" id="messages"></div>
-            <div class="input-area">
-                <input type="text" id="messageInput" placeholder="Echo a message!" autocomplete="off" spellcheck="false">
-                <button id="sendBtn">
-                    <svg class="echo-icon" viewBox="0 0 24 24">
-                        <path d="M5 12a7 7 0 0 1 7-7"/>
-                        <path d="M8 12a4 4 0 0 1 4-4"/>
-                        <path d="M11 12a1 1 0 0 1 1-1"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </body>
+<div class="app-container">
+
+<!-- THE TOP BANNER: Spans the entire width! -->
+<div class="app-header">EchoLoop</div>
+
+<!-- MAIN LAYER: Splits everything below the header -->
+<div class="main-content">
+
+<!-- LEFT SIDEBAR -->
+<div class="sidebar">
+<h3 style="color: #1b4332; margin-left: 8px; margin-bottom: 10px;">Chats & DMs</h3>
+<div class="channel-item active"> Home</div>
+<div class="channel-item"> Friends</div>
+</div>
+
+<!-- RIGHT SIDEBAR: Chat area -->
+<div class="chat-area">
+<div class="messages-box" id="messages"></div>
+
+<div class="input-area">
+<input type="text" id="messageInput" placeholder="Echo a message..." autocomplete="off" spellcheck="false">
+<button id="sendBtn">
+<svg class="echo-icon" viewBox="0 0 24 24">
+<path d="M5 12a7 7 0 0 1 7-7" />
+<path d="M8 12a4 4 0 0 1 4-4" />
+<path d="M11 12a1 1 0 0 1 1-1" />
+</svg>
+</button>
+</div>
+</div>
+
+</div> <!-- End of main-content -->
+
+</svg>
+</button>
+</div>
+</div>
+
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.3/socket.io.min.js"></script>
 <script>
-const socket = io('https://onrender.com', { transports: ['websocket'] });
+const socket = io()
 
 const box = document.getElementById('messages');
 const input = document.getElementById('messageInput');
